@@ -187,7 +187,8 @@ if st.sidebar.button("Save Program"):
             [df, pd.DataFrame([new_row])],
             ignore_index=True
         )
-
+if "Edit Label" in df.columns:
+    df = df.drop(columns=["Edit Label"])
         df.to_csv(DATA_FILE, index=False)
 
         st.success("Saved successfully ✅")
@@ -303,16 +304,23 @@ if len(program_list) > 0:
 
 st.subheader("✏️ Edit Program")
 
-edit_list = df["Program"].dropna().astype(str).tolist()
+df["Edit Label"] = (
+    df["University"].fillna("").astype(str)
+    + " | "
+    + df["Program"].fillna("").astype(str)
+    + " | "
+    + df["Country"].fillna("").astype(str)
+)
 
-if len(edit_list) > 0:
-    selected_edit_program = st.selectbox(
-        "Select Program To Edit",
-        edit_list
-    )
+edit_list = df["Edit Label"].tolist()
 
-    edit_index = df[df["Program"] == selected_edit_program].index[0]
-    selected_row = df.loc[edit_index]
+selected_edit_program = st.selectbox(
+    "Select Program To Edit",
+    edit_list
+)
+
+edit_index = df[df["Edit Label"] == selected_edit_program].index[0]
+selected_row = df.loc[edit_index]
 
     with st.expander("Open Edit Form"):
         edit_country = st.text_input("Edit Country", selected_row.get("Country", ""))
