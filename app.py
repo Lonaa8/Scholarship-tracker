@@ -189,8 +189,8 @@ if st.sidebar.button("Save Program"):
         )
 if "Edit Label" in df.columns:
     df = df.drop(columns=["Edit Label"])
+    
         df.to_csv(DATA_FILE, index=False)
-
         st.success("Saved successfully ✅")
 
 # ----------------------------
