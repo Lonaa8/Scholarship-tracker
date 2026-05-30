@@ -320,7 +320,7 @@ selected_edit_program = st.selectbox(
 edit_index = df[df["Program"].astype(str) == selected_edit_program].index[0]
 selected_row = df.loc[edit_index]
 
-    with st.expander("Open Edit Form"):
+with st.expander("Open Edit Form"):
         edit_country = st.text_input("Edit Country", selected_row.get("Country", ""))
         edit_university = st.text_input("Edit University", selected_row.get("University", ""))
         edit_program = st.text_input("Edit Program Name", selected_row.get("Program", ""))
