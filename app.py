@@ -86,7 +86,7 @@ display_df = filtered_df[main_columns]
 st.dataframe(display_df, width="stretch")
 # --- Details Table ---
 st.subheader("📝 Program Details")
-detail_columns = ["Email", "Link", "Notes", "Verified", "Deadline Status"]
+detail_columns = ["Email", "Link", "Notes", "Verified"]
 detail_df = filtered_df[detail_columns]
 
 with st.expander("Show Details"):
