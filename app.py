@@ -380,8 +380,7 @@ with st.expander("Open Edit Form"):
 
                 st.success("Program updated successfully ✅")
                 st.rerun()
-else:
-    st.info("No programs to edit yet.")
+
 # ----------------------------
 # Display Table
 # ----------------------------
