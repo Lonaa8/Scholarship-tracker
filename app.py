@@ -85,7 +85,7 @@ display_df = filtered_df[main_columns]
 
 if "Application Status" in display_df.columns:
     st.dataframe(
-        display_df.style.applymap(color_status, subset=["Application Status"]),
+      display_df.style.applymap(color_status, subset=["Application Status"]),
         width="stretch"
     )
 else:
