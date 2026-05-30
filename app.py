@@ -403,23 +403,7 @@ if sort_deadline:
     filtered_df = filtered_df.sort_values("Deadline Date")
     filtered_df = filtered_df.drop(columns=["Deadline Date"])
 
-def color_status(val):
-    if val == "Accepted":
-        return "background-color: #c8f7c5"
-    elif val == "Applied":
-        return "background-color: #fff3b0"
-    elif val == "Rejected":
-        return "background-color: #ffc9c9"
-    elif val == "Preparing":
-        return "background-color: #cce5ff"
-    return ""
 
-if "Application Status" in display_df.columns:
-    st.dataframe(
-        display_df.style.applymap(color_status, subset=["Application Status"]),
-        width="stretch"
-    )
-else:
     st.dataframe(display_df, width="stretch")
 
 # ----------------------------
