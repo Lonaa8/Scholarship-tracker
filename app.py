@@ -310,14 +310,14 @@ df["Edit Label"] = (
     + df["Country"].fillna("").astype(str)
 )
 
-edit_list = df["Edit Label"].tolist()
+edit_list = df["Program"].dropna().astype(str).tolist()
 
 selected_edit_program = st.selectbox(
     "Select Program To Edit",
     edit_list
 )
 
-edit_index = df[df["Edit Label"] == selected_edit_program].index[0]
+edit_index = df[df["Program"].astype(str) == selected_edit_program].index[0]
 selected_row = df.loc[edit_index]
 
     with st.expander("Open Edit Form"):
