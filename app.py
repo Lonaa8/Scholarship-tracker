@@ -1,118 +1,67 @@
 import streamlit as st
 import pandas as pd
 
-DATA_FILE = "programs.csv"
+DATA_FILE = "scholarship_programs.csv"
 
-# --- Load CSV ---
+st.set_page_config(page_title="Scholarship Finder", layout="wide")
+
+# Load data
 try:
     df = pd.read_csv(DATA_FILE)
 except FileNotFoundError:
-    df = pd.DataFrame(columns=[
-        "Country", "University", "Program", "Level", "Field", "Funding",
-        "Deadline", "IELTS", "GPA", "Application Status", "Email", "Link",
-        "Notes", "Verified", "Deadline Status"
-    ])
+    df = pd.DataFrame(columns=["Country", "Field", "Level", "University", "Program",
+                               "Funding", "Deadline", "Email", "Link", "Notes", "IELTS", "GPA", "Application Status", "Verified"])
 
-# --- Sidebar Inputs ---
-st.sidebar.header("Add New Program")
-country = st.sidebar.text_input("Country")
-university = st.sidebar.text_input("University")
-program = st.sidebar.text_input("Program")
-level = st.sidebar.text_input("Level")
-field = st.sidebar.text_input("Field")
-funding = st.sidebar.text_input("Funding")
-deadline = st.sidebar.text_input("Deadline")
-ielts = st.sidebar.text_input("IELTS")
-gpa = st.sidebar.text_input("GPA")
-status = st.sidebar.selectbox("Application Status", ["Applied", "Accepted", "Rejected", "Preparing"])
-email = st.sidebar.text_input("Email")
-link = st.sidebar.text_input("Link")
-notes = st.sidebar.text_area("Notes")
-verified = st.sidebar.checkbox("Verified")
+st.title("🎓 Scholarship Finder")
+st.write("اینجا می‌تونی برنامه‌ها و بورسیه‌هایی که پیدا می‌کنی رو ذخیره و دسته‌بندی کنی")
 
-if st.sidebar.button("Save Program"):
-    new_row = {
-        "Country": country,
-        "University": university,
-        "Program": program,
-        "Level": level,
-        "Field": field,
-        "Funding": funding,
-        "Deadline": deadline,
-        "IELTS": ielts,
-        "GPA": gpa,
-        "Application Status": status,
-        "Email": email,
-        "Link": link,
-        "Notes": notes,
-        "Verified": verified,
-        "Deadline Status": ""
-    }
-    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    df.to_csv(DATA_FILE, index=False)
-    st.success("Program saved successfully ✅")
+# Sidebar: Add Program
+st.sidebar.header("+ Add Program")
+with st.sidebar.form("add_program"):
+    country = st.text_input("Country")
+    field = st.text_input("Field")
+    level = st.selectbox("Level", ["Bachelor", "Master", "PhD"])
+    university = st.text_input("University")
+    program_name = st.text_input("Program name")
+    funding = st.text_input("Funding")
+    deadline = st.text_input("Deadline")
+    email = st.text_input("Email")
+    link = st.text_input("Official link")
+    notes = st.text_area("Notes")
+    ielts = st.text_input("IELTS")
+    gpa = st.text_input("GPA")
+    verified = st.checkbox("Verified", False)
+    submitted = st.form_submit_button("Add Program")
 
-# --- Filters ---
-st.sidebar.header("Filters")
-selected_country = st.sidebar.multiselect("Filter by Country", df["Country"].dropna().unique())
-selected_status = st.sidebar.multiselect("Filter by Status", df["Application Status"].dropna().unique())
+    if submitted:
+        new_row = {
+            "Country": country, "Field": field, "Level": level, "University": university,
+            "Program": program_name, "Funding": funding, "Deadline": deadline,
+            "Email": email, "Link": link, "Notes": notes, "IELTS": ielts,
+            "GPA": gpa, "Application Status": "Applied", "Verified": verified
+        }
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df.to_csv(DATA_FILE, index=False)
+        st.success("Program added successfully ✅")
 
-filtered_df = df.copy()
-if selected_country:
-    filtered_df = filtered_df[filtered_df["Country"].isin(selected_country)]
-if selected_status:
-    filtered_df = filtered_df[filtered_df["Application Status"].isin(selected_status)]
-
-# --- Color function ---
-def color_status(val):
-    if val == "Accepted":
-        return "background-color: #c8f7c5"
-    elif val == "Applied":
-        return "background-color: #fff3b0"
-    elif val == "Rejected":
-        return "background-color: #ffc9c9"
-    elif val == "Preparing":
-        return "background-color: #cce5ff"
-    return ""
-
-# --- Main Table ---
-st.subheader("📋 Saved Programs")
-main_columns = [
-    "Country", "University", "Program", "Level", "Field", "Funding",
-    "Deadline", "IELTS", "GPA", "Application Status"
-]
-display_df = filtered_df[main_columns]
-
-if "Application Status" in display_df.columns:
-    st.dataframe(
-        display_df.style.applymap(color_status, subset=["Application Status"]),
-        width="stretch"
-    )
-else:
-    st.dataframe(display_df, width="stretch")
-
-# --- Details Table ---
-st.subheader("📝 Program Details")
-detail_columns = ["Email", "Link", "Notes", "Verified", "Deadline Status"]
-detail_df = filtered_df[detail_columns]
-
-with st.expander("Show Details"):
-    st.dataframe(detail_df, width="stretch")
-
-# --- Edit Program ---
-st.subheader("✏️ Edit Program")
+# Sidebar: Edit Program
+st.sidebar.header("✏️ Edit Program")
 edit_list = df["Program"].dropna().astype(str).tolist()
 if len(edit_list) > 0:
-    selected_edit_program = st.selectbox("Select Program To Edit", edit_list)
-    edit_index = df[df["Program"].astype(str) == selected_edit_program].index[0]
+    selected_program = st.sidebar.selectbox("Select Program To Edit", edit_list)
+    edit_index = df[df["Program"].astype(str) == selected_program].index[0]
     selected_row = df.loc[edit_index]
 
-    with st.expander("Open Edit Form"):
+    with st.sidebar.expander("Open Edit Form"):
         edit_country = st.text_input("Edit Country", selected_row.get("Country", ""))
         edit_university = st.text_input("Edit University", selected_row.get("University", ""))
         edit_program = st.text_input("Edit Program Name", selected_row.get("Program", ""))
-        edit_level = st.text_input("Edit Level", selected_row.get("Level", ""))
-st.text_input("Edit Funding", selected_row.get("Funding", ""))
+        edit_level = st.selectbox(
+            "Edit Level",
+            ["Bachelor", "Master", "PhD"],
+            index=["Bachelor", "Master", "PhD"].index(selected_row.get("Level", "Bachelor"))
+        )
+        edit_funding = st.text_input("Edit Funding", selected_row.get("Funding", ""))
         edit_deadline = st.text_input("Edit Deadline", selected_row.get("Deadline", ""))
         edit_ielts = st.text_input("Edit IELTS", selected_row.get("IELTS", ""))
         edit_gpa = st.text_input("Edit GPA", selected_row.get("GPA", ""))
@@ -127,21 +76,23 @@ st.text_input("Edit Funding", selected_row.get("Funding", ""))
         edit_verified = st.checkbox("Edit Verified", selected_row.get("Verified", False))
 
         if st.button("Save Changes"):
-            df.at[edit_index, "Country"] = edit_country
-            df.at[edit_index, "University"] = edit_university
-            df.at[edit_index, "Program"] = edit_program
-            df.at[edit_index, "Level"] = edit_level
-            df.at[edit_index, "Field"] = edit_field
-            df.at[edit_index, "Funding"] = edit_funding
-            df.at[edit_index, "Deadline"] = edit_deadline
-            df.at[edit_index, "IELTS"] = edit_ielts
-            df.at[edit_index, "GPA"] = edit_gpa
-            df.at[edit_index, "Application Status"] = edit_status
-            df.at[edit_index, "Email"] = edit_email
-            df.at[edit_index, "Link"] = edit_link
-            df.at[edit_index, "Notes"] = edit_notes
-            df.at[edit_index, "Verified"] = edit_verified
+            df.loc[edit_index] = {
+                "Country": edit_country, "Field": selected_row["Field"], "Level": edit_level,
+                "University": edit_university, "Program": edit_program, "Funding": edit_funding,
+                "Deadline": edit_deadline, "Email": edit_email, "Link": edit_link,
+                "Notes": edit_notes, "IELTS": edit_ielts, "GPA": edit_gpa,
+                "Application Status": edit_status, "Verified": edit_verified
+                }
             df.to_csv(DATA_FILE, index=False)
-            st.success("Changes saved successfully ✅")
-        edit_field = st.text_input("Edit Field", selected_row.get("Field", ""))
-        edit_funding =
+            st.success("Program updated successfully ✅")
+            st.experimental_rerun()
+else:
+    st.sidebar.info("No programs to edit yet.")
+
+# Main: Display Table
+st.subheader("📌 Saved Programs")
+filtered_df = df.copy()
+filtered_df = filtered_df.dropna(how="all", axis=1)  # حذف ستون‌های کاملاً خالی
+filtered_df = filtered_df.loc[:, (filtered_df != "").any(axis=0)]  # حذف ستون‌های خالی از نظر محتوا
+st.dataframe(filtered_df, use_container_width=True)
+                
