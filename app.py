@@ -83,14 +83,7 @@ main_columns = [
 ]
 display_df = filtered_df[main_columns]
 
-if "Application Status" in display_df.columns:
-    st.dataframe(
-      display_df.style.applymap(color_status, subset=["Application Status"]),
-        width="stretch"
-    )
-else:
-    st.dataframe(display_df, width="stretch")
-
+st.dataframe(display_df, width="stretch")
 # --- Details Table ---
 st.subheader("📝 Program Details")
 detail_columns = ["Email", "Link", "Notes", "Verified", "Deadline Status"]
