@@ -11,11 +11,6 @@ if st.session_state.get("access_token") and st.session_state.get("refresh_token"
         st.session_state.access_token,
         st.session_state.refresh_token
     )
-if "access_token" in st.session_state:
-    supabase.auth.set_session(
-        st.session_state.access_token,
-        st.session_state.refresh_token
-    )
 
 st.title("Scholarship Tracker with Supabase 🚀")
 
