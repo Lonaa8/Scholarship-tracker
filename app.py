@@ -93,7 +93,6 @@ verified = st.sidebar.checkbox("verified")
 
 if st.sidebar.button("Save Program"):
   new_row = {
-      
     "user_id": st.session_state.user_id,
     "country": country,
     "university": university,
@@ -110,10 +109,12 @@ if st.sidebar.button("Save Program"):
     "notes": notes or "",
     "verified": verified or False
 }
+    try:
     supabase.table("programs").insert(new_row).execute()
     st.success("Program saved successfully ✅")
-    st.experimental_rerun()
-
+    st.rerun()
+except Exception as e:
+    st.error(e)
 # --- Filters ---
 st.sidebar.header("Filters")
 selected_country = st.sidebar.multiselect("Filter by country", df["country"].dropna().unique())
