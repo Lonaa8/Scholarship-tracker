@@ -92,31 +92,30 @@ notes = st.sidebar.text_area("notes")
 verified = st.sidebar.checkbox("verified")
 
 if st.sidebar.button("Save Program"):
-  new_row = {
-      
-    "user_id": st.session_state.user_id,
-    "country": country,
-    "university": university,
-    "program": program or None,
-    "level": level or None,
-    "field": field or None,
-    "funding": funding or None,
-    "deadline": deadline or None,
-    "ielts": ielts or None,
-    "gpa": gpa or None,
-    "application_status": status or None,
-    "email": email_field or None,
-    "link": link or None,
-    "notes": notes or "",
-    "verified": verified or False
-}
-    
-try:
-    supabase.table("programs").insert(new_row).execute()
-    st.success("Program saved successfully ✅")
-    st.rerun()
-except Exception as e:
-    st.error(e)
+    new_row = {
+        "user_id": st.session_state.user_id,
+        "country": country,
+        "university": university,
+        "program": program or None,
+        "level": level or None,
+        "field": field or None,
+        "funding": funding or None,
+        "deadline": deadline or None,
+        "ielts": ielts or None,
+        "gpa": gpa or None,
+        "application_status": status or None,
+        "email": email_field or None,
+        "link": link or None,
+        "notes": notes or "",
+        "verified": verified or False
+    }
+
+    try:
+        supabase.table("programs").insert(new_row).execute()
+        st.success("Program saved successfully ✅")
+        st.rerun()
+    except Exception as e:
+        st.error(str(e))
 # --- Filters ---
 st.sidebar.header("Filters")
 selected_country = st.sidebar.multiselect("Filter by country", df["country"].dropna().unique())
