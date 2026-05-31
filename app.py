@@ -40,11 +40,28 @@ def login(email, password):
         st.error("Login failed")
 
 def register(email, password):
-    res = supabase.auth.sign_up({"email": email, "password": password})
-    if res.user:
-        st.success("Registered! Check your email for confirmation.")
-    else:
-        st.error(res.error.message)
+    try:
+        supabase.auth.sign_up({
+            "email": email,
+            "password": password
+        })
+
+        res = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
+
+        st.session_state.logged_in = True
+        st.session_state.user_email = email
+        st.session_state.user_id = res.user.id
+        st.session_state.access_token = res.session.access_token
+        st.session_state.refresh_token = res.session.refresh_token
+
+        st.success("Account created and logged in ✅")
+        st.rerun()
+
+    except Exception as e:
+        st.error(str(e))
 
 def logout():
     supabase.auth.sign_out()
