@@ -6,6 +6,11 @@ import pandas as pd
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+if st.session_state.get("access_token") and st.session_state.get("refresh_token"):
+    supabase.auth.set_session(
+        st.session_state.access_token,
+        st.session_state.refresh_token
+    )
 if "access_token" in st.session_state:
     supabase.auth.set_session(
         st.session_state.access_token,
