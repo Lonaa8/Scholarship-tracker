@@ -26,56 +26,8 @@ if "user_email" not in st.session_state:
     st.session_state.user_email = ""
 if "user_id" not in st.session_state:
     st.session_state.user_id = None
-
 # --- Authentication ---
-def login(email, password):
-    res = supabase.auth.sign_in_with_password({
-        "email": email,
-        "password": password
-    })
-    if res.user:
-        st.session_state.logged_in = True
-        st.session_state.user_email = email
-        st.session_state.user_id = res.user.id
-        st.session_state.access_token = res.session.access_token
-        st.session_state.refresh_token = res.session.refresh_token
-        st.success("Logged in ✅")
-        st.experimental_rerun()
-    else:
-        st.error("Login failed")
 
-def register(email, password):
-    try:
-        supabase.auth.sign_up({
-            "email": email,
-            "password": password
-        })
-
-        res = supabase.auth.sign_in_with_password({
-            "email": email,
-            "password": password
-        })
-
-        st.session_state.logged_in = True
-        st.session_state.user_email = email
-        st.session_state.user_id = res.user.id
-        st.session_state.access_token = res.session.access_token
-        st.session_state.refresh_token = res.session.refresh_token
-
-        st.success("Account created and logged in ✅")
-        st.rerun()
-
-    except Exception as e:
-        st.error(str(e))
-
-def logout():
-    supabase.auth.sign_out()
-    st.session_state.logged_in = False
-    st.session_state.user_email = ""
-    st.session_state.user_id = None
-    st.experimental_rerun()
-
-# --- Login/Register Form ---
 def login(email, password):
     try:
         res = supabase.auth.sign_in_with_password({
@@ -89,7 +41,6 @@ def login(email, password):
         st.session_state.access_token = res.session.access_token
         st.session_state.refresh_token = res.session.refresh_token
 
-        st.success("Logged in ✅")
         st.rerun()
 
     except Exception as e:
@@ -98,7 +49,7 @@ def login(email, password):
 
 def register(email, password):
     try:
-        supabase.auth.sign_up({
+        res = supabase.auth.sign_up({
             "email": email,
             "password": password
         })
@@ -114,7 +65,6 @@ def register(email, password):
         st.session_state.access_token = res.session.access_token
         st.session_state.refresh_token = res.session.refresh_token
 
-        st.success("Account created and logged in ✅")
         st.rerun()
 
     except Exception as e:
@@ -134,10 +84,32 @@ def logout():
     st.session_state.refresh_token = None
 
     st.rerun()
-# --- Fetch Programs for Logged-in User ---
-if not st.session_state.get("user_id"):
-    st.error("User ID is missing. Please logout and login again.")
+   # --- Login/Register Form ---
+
+if not st.session_state.logged_in:
+
+    st.subheader("Login / Register")
+
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("Register"):
+            register(email, password)
+
+    with col2:
+        if st.button("Login"):
+            login(email, password)
+
     st.stop()
+
+else:
+    st.sidebar.button("Logout", on_click=logout) 
+
+# --- Fetch Programs for Logged-in User ---
+
 programs = supabase.table("programs").select("*").eq("user_id", st.session_state.user_id).execute().data
 df = pd.DataFrame(programs)
 expected_columns = [
