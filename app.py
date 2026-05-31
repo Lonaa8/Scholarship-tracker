@@ -135,6 +135,9 @@ def logout():
 
     st.rerun()
 # --- Fetch Programs for Logged-in User ---
+if not st.session_state.get("user_id"):
+    st.error("User ID is missing. Please logout and login again.")
+    st.stop()
 programs = supabase.table("programs").select("*").eq("user_id", st.session_state.user_id).execute().data
 df = pd.DataFrame(programs)
 expected_columns = [
