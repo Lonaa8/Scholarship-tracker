@@ -93,6 +93,7 @@ verified = st.sidebar.checkbox("verified")
 
 if st.sidebar.button("Save Program"):
   new_row = {
+      
     "user_id": st.session_state.user_id,
     "country": country,
     "university": university,
