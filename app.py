@@ -39,7 +39,7 @@ def login(email, password):
         st.rerun()
 
     except Exception as e:
-        st.error(str(e))
+        st.error("Invalid mail or password")
 
 
 def register(email, password):
@@ -63,7 +63,7 @@ def register(email, password):
         st.rerun()
 
     except Exception as e:
-        st.error(str(e))
+        st.error("Registration failed. Please check your email and password")
 
 
 def logout():
@@ -101,7 +101,8 @@ if not st.session_state.logged_in:
     st.stop()
 
 else:
-    st.sidebar.button("Logout", on_click=logout) 
+  if  st.sidebar.button("Logout"):
+      logout()
 
 # --- Fetch Programs for Logged-in User ---
 
@@ -118,9 +119,9 @@ if df.empty:
     df = pd.DataFrame(columns=expected_columns)
 # --- Sidebar Inputs ---
 st.sidebar.header("Add New Program")
-country = st.sidebar.text_input("country")
-university = st.sidebar.text_input("university")
-program = st.sidebar.text_input("program")
+country = st.sidebar.text_input("country *")
+university = st.sidebar.text_input("university *")
+program = st.sidebar.text_input("program *")
 level = st.sidebar.text_input("level")
 field = st.sidebar.text_input("field")
 funding = st.sidebar.text_input("funding")
@@ -134,6 +135,9 @@ notes = st.sidebar.text_area("notes")
 verified = st.sidebar.checkbox("verified")
 
 if st.sidebar.button("Save Program"):
+    if not country or not university or not program:
+        st.sidebar.error("Please fill all required fields (*)")
+        st.stop()
     new_row = {
         "user_id": st.session_state.user_id,
         "country": country,
