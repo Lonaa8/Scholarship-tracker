@@ -6,6 +6,11 @@ import pandas as pd
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+if "access_token" in st.session_state:
+    supabase.auth.set_session(
+        st.session_state.access_token,
+        st.session_state.refresh_token
+    )
 
 st.title("Scholarship Tracker with Supabase 🚀")
 
@@ -27,6 +32,8 @@ def login(email, password):
         st.session_state.logged_in = True
         st.session_state.user_email = email
         st.session_state.user_id = res.user.id
+        st.session_state.access_token = res.session.access_token
+        st.session_state.refresh_token = res.session.refresh_token
         st.success("Logged in ✅")
         st.experimental_rerun()
     else:
