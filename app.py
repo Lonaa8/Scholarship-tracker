@@ -19,7 +19,10 @@ if "user_id" not in st.session_state:
 
 # --- Authentication ---
 def login(email, password):
-    res = supabase.auth.sign_in({"email": email, "password": password})
+    res = supabase.auth.sign_in_with_password({
+        "email": email,
+        "password": password
+    })
     if res.user:
         st.session_state.logged_in = True
         st.session_state.user_email = email
