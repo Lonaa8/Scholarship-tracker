@@ -108,7 +108,7 @@ if st.sidebar.button("Save Program"):
 # --- Filters ---
 st.sidebar.header("Filters")
 selected_country = st.sidebar.multiselect("Filter by country", df["country"].dropna().unique())
-selected_status = st.sidebar.multiselect("Filter by Status", df["application_status"].dropna().unique())
+selected_status = st.sidebar.multiselect("Filter by status", df["application_status"].dropna().unique())
 filtered_df = df.copy()
 if selected_country:
     filtered_df = filtered_df[filtered_df["country"].isin(selected_country)]
@@ -134,20 +134,20 @@ if edit_list:
     selected_row = df[df["program"]==selected_edit_program].iloc[0]
 
     with st.expander("Open Edit Form"):
-        edit_country = st.text_input("Edit Country", selected_row.get("country",""))
-        edit_university = st.text_input("Edit University", selected_row.get("university",""))
-        edit_program = st.text_input("Edit Program Name", selected_row.get("program",""))
-        edit_level = st.text_input("Edit Level", selected_row.get("level",""))
-        edit_field = st.text_input("Edit Field", selected_row.get("field",""))
-        edit_funding = st.text_input("Edit Funding", selected_row.get("funding",""))
-        edit_deadline = st.text_input("Edit Deadline", selected_row.get("deadline",""))
-        edit_ielts = st.text_input("Edit IELTS", selected_row.get("ielts",""))
-        edit_gpa = st.text_input("Edit GPA", selected_row.get("gpa",""))
-        edit_status = st.selectbox("Edit Application Status", ["Applied","Accepted","Rejected","Preparing"], index=["Applied","Accepted","Rejected","Preparing"].index(selected_row.get("application_status","Applied")))
-        edit_email = st.text_input("Edit Email", selected_row.get("email",""))
-        edit_link = st.text_input("Edit Link", selected_row.get("link",""))
-        edit_notes = st.text_area("Edit Notes", selected_row.get("notes",""))
-        edit_verified = st.checkbox("Edit Verified", selected_row.get("verified",False))
+        edit_country = st.text_input("Edit country", selected_row.get("country",""))
+        edit_university = st.text_input("Edit university", selected_row.get("university",""))
+        edit_program = st.text_input("Edit program Name", selected_row.get("program",""))
+        edit_level = st.text_input("Edit level", selected_row.get("level",""))
+        edit_field = st.text_input("Edit field", selected_row.get("field",""))
+        edit_funding = st.text_input("Edit funding", selected_row.get("funding",""))
+        edit_deadline = st.text_input("Edit deadline", selected_row.get("deadline",""))
+        edit_ielts = st.text_input("Edit ielts", selected_row.get("ielts",""))
+        edit_gpa = st.text_input("Edit gpa", selected_row.get("gpa",""))
+        edit_status = st.selectbox("Edit application status", ["Applied","Accepted","Rejected","Preparing"], index=["Applied","Accepted","Rejected","Preparing"].index(selected_row.get("application_status","Applied")))
+        edit_email = st.text_input("Edit email", selected_row.get("email",""))
+        edit_link = st.text_input("Edit link", selected_row.get("link",""))
+        edit_notes = st.text_area("Edit notes", selected_row.get("notes",""))
+        edit_verified = st.checkbox("Edit verified", selected_row.get("verified",False))
 
         col1,col2 = st.columns(2)
         with col1:
