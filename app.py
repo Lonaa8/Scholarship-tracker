@@ -65,7 +65,15 @@ else:
 # --- Fetch Programs for Logged-in User ---
 programs = supabase.table("programs").select("*").eq("user_id", st.session_state.user_id).execute().data
 df = pd.DataFrame(programs)
+expected_columns = [
+    "id", "created_at", "user_id",
+    "country", "university", "program", "level", "field", "funding",
+    "deadline", "ielts", "gpa", "application_status",
+    "email", "link", "notes", "verified"
+]
 
+if df.empty:
+    df = pd.DataFrame(columns=expected_columns)
 # --- Sidebar Inputs ---
 st.sidebar.header("Add New Program")
 country = st.sidebar.text_input("country")
@@ -107,7 +115,6 @@ if st.sidebar.button("Save Program"):
 
 # --- Filters ---
 st.sidebar.header("Filters")
-st.write(df.columns)
 selected_country = st.sidebar.multiselect("Filter by country", df["country"].dropna().unique())
 selected_status = st.sidebar.multiselect("Filter by status", df["application_status"].dropna().unique())
 filtered_df = df.copy()
