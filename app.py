@@ -107,6 +107,7 @@ if st.sidebar.button("Save Program"):
 
 # --- Filters ---
 st.sidebar.header("Filters")
+st.write(df.columns)
 selected_country = st.sidebar.multiselect("Filter by country", df["country"].dropna().unique())
 selected_status = st.sidebar.multiselect("Filter by status", df["application_status"].dropna().unique())
 filtered_df = df.copy()
