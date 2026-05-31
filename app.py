@@ -109,7 +109,8 @@ if st.sidebar.button("Save Program"):
     "notes": notes or "",
     "verified": verified or False
 }
-    try:
+    
+try:
     supabase.table("programs").insert(new_row).execute()
     st.success("Program saved successfully ✅")
     st.rerun()
