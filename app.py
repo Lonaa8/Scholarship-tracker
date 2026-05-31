@@ -92,23 +92,23 @@ notes = st.sidebar.text_area("notes")
 verified = st.sidebar.checkbox("verified")
 
 if st.sidebar.button("Save Program"):
-    new_row = {
-        "user_id": st.session_state.user_id,
-        "country": country,
-        "university": university,
-        "program": program,
-        "level": level,
-        "field": field,
-        "funding": funding,
-        "deadline": deadline,
-        "ielts": ielts,
-        "gpa": gpa,
-        "application_status": status,
-        "email": email_field,
-        "link": link,
-        "notes": notes,
-        "verified": verified
-    }
+  new_row = {
+    "user_id": st.session_state.user_id,
+    "country": country,
+    "university": university,
+    "program": program or None,
+    "level": level or None,
+    "field": field or None,
+    "funding": funding or None,
+    "deadline": deadline or None,
+    "ielts": ielts or None,
+    "gpa": gpa or None,
+    "application_status": status or None,
+    "email": email_field or None,
+    "link": link or None,
+    "notes": notes or "",
+    "verified": verified or False
+}
     supabase.table("programs").insert(new_row).execute()
     st.success("Program saved successfully ✅")
     st.experimental_rerun()
@@ -173,8 +173,8 @@ if edit_list:
                     "application_status": edit_status,
                     "email": edit_email,
                     "link": edit_link,
-                    "notes": edit_notes,
-                    "verified": edit_verified
+                    "notes": edit_notes or "",
+                    "verified": edit_verified or False
                 }).eq("id", selected_row["id"]).execute()
                 st.success("Changes saved ✅")
                 st.experimental_rerun()
